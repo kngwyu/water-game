@@ -31,14 +31,52 @@ window.onload = function() {
     const WATER_X = [0, 1, 0, -1, 100];
     const WATER_Y = [-1, 0, 1, 0, 100];
     const INPUT_DV = 4;
+    let startX = null;
+    let startY = null;
+    let touchR = false;
+    let touchL = false;
+    let touchU = false;
+    let touchD = false;
+    let touch_init() = function() {
+        touchR = false;
+        touchL = false;
+        touchU = false;
+        touchD = false;
+    };
     game.rootScene.addEventListener('touchstart', function(e) {
-        touchX = e.x;
-        touchY = e.y;
+        startX = e.x;
+        startY = e.y;
+        touchR = false;
+        touchL = false;
     });
     game.rootScene.addEventListener('touchmove', function(e) {
-        touchX = e.x;
-        touchY = e.y;
+        touch_init();
+        if (startX) {
+            if (e.x - startX > 10.0) {
+                touchR = true;
+            }
+            if (startX - e.x > 10.0) {
+                touchL = true;
+            }
+        }
+        if (startY) {
+            if (e.y - startY > 10.0) {
+                touchD = true;
+            }
+            if (startY - e.y > 10.0) {
+                touchU = true;
+            }
+        }
     });
+    game.rootScene.addEventListener('touchend', function(e) {
+        touchX = null;
+        touchY = null;
+        touchR = false;
+        touchL = false;
+    });
+    let touch_input = function() {
+        if (touchX)
+    };
     Player = enchant.Class.create(Sprite, {
         initialize: function() {
             let game = enchant.Game.instance;
@@ -52,13 +90,13 @@ window.onload = function() {
                 this.count += 1;
                 let dx = 0;
                 let dy = 0;
-                if (game.input.left) {
+                if (game.input.left || touchL) {
                     dx -= INPUT_DV;
-                } else if (game.input.right) {
+                } else if (game.input.right || touchR) {
                     dx += INPUT_DV;
-                } else if (game.input.up) {
+                } else if (game.input.up || touchU) {
                     dy -= INPUT_DV;
-                } else if (game.input.down) {
+                } else if (game.input.down || touchD) {
                     dy += INPUT_DV;
                 }
                 let id = map_id(this.x, this.y);
