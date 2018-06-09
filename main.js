@@ -37,7 +37,7 @@ window.onload = function() {
     let touchL = false;
     let touchU = false;
     let touchD = false;
-    let touch_init() = function() {
+    let touch_init = function() {
         touchR = false;
         touchL = false;
         touchU = false;
@@ -46,8 +46,6 @@ window.onload = function() {
     game.rootScene.addEventListener('touchstart', function(e) {
         startX = e.x;
         startY = e.y;
-        touchR = false;
-        touchL = false;
     });
     game.rootScene.addEventListener('touchmove', function(e) {
         touch_init();
@@ -69,14 +67,8 @@ window.onload = function() {
         }
     });
     game.rootScene.addEventListener('touchend', function(e) {
-        touchX = null;
-        touchY = null;
-        touchR = false;
-        touchL = false;
+        touch_init();
     });
-    let touch_input = function() {
-        if (touchX)
-    };
     Player = enchant.Class.create(Sprite, {
         initialize: function() {
             let game = enchant.Game.instance;
