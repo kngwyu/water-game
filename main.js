@@ -43,7 +43,8 @@ window.onload = function() {
         player.count = 0;
         player.addEventListener('enterframe', function() {
             player.count += 1;
-            dx = 0; dy = 0;
+            let dx = 0;
+            let dy = 0;
             if (game.input.left) {
                 dx -= INPUT_DV;
             } else if (game.input.right) {
