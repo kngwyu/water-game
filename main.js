@@ -50,18 +50,18 @@ window.onload = function() {
     game.rootScene.addEventListener('touchmove', function(e) {
         touch_init();
         if (startX) {
-            if (e.x - startX > 10.0) {
+            if (e.x - startX > 10) {
                 touchR = true;
             }
-            if (startX - e.x > 10.0) {
+            if (startX - e.x > 10) {
                 touchL = true;
             }
         }
         if (startY) {
-            if (e.y - startY > 10.0) {
+            if (e.y - startY > 10) {
                 touchD = true;
             }
-            if (startY - e.y > 10.0) {
+            if (startY - e.y > 10) {
                 touchU = true;
             }
         }
