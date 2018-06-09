@@ -25,7 +25,7 @@ window.onload = function() {
     ];
     let map_id = function (x, y) {
         let to_idx = function (i) {
-            return Math.floor((i + 16) / 32);
+            return Math.floor(i / 32);
         };
         return MAP_DATA[to_idx(y)][to_idx(x)];
     };
