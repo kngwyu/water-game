@@ -21,11 +21,11 @@ window.onload = function() {
         [2, 2, 0, 0, 0, 0, 0, 0],
         [2, 0, 0, 0, 0, 0, 0, 0],
         [2, 0, 0, 0, 0, 0, 0, 2],
-        [2, 1, 1, 1, 1, 1, 1, 4],
+        [1, 1, 1, 1, 1, 1, 1, 4],
     ];
     let map_id = function (x, y) {
         let to_idx = function (i) {
-            return Math.floor(i / 32);
+            return Math.floor((i + 16) / 32);
         };
         return MAP_DATA[to_idx(y)][to_idx(x)];
     };
