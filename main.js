@@ -67,8 +67,8 @@ window.onload = function() {
             touched["L"] = startX - e.x > TOUCH_THRESHOLD;
         }
         if (startY) {
-            touched["U"] = e.y - startY > TOUCH_THRESHOLD;
-            touched["D"] = startY - e.y > TOUCH_THRESHOLD;
+            touched["D"] = e.y - startY > TOUCH_THRESHOLD;
+            touched["U"] = startY - e.y > TOUCH_THRESHOLD;
         }
     });
     Player = enchant.Class.create(Sprite, {
