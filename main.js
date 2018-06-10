@@ -49,8 +49,8 @@ window.onload = function() {
         };
         return MAP_DATA[to_idx(y)][to_idx(x)];
     };
-    const WATER_X = [0, 1, 0, -1, 100];
-    const WATER_Y = [-1, 0, 1, 0, 100];
+    const WATER_X = [0, 1, 0, -1, 10000];
+    const WATER_Y = [-1, 0, 1, 0, 10000];
     const INPUT_DV = 4;
     const TOUCH_THRESHOLD = 10;
     const APPLE_THRESHOLD = 12;
@@ -71,12 +71,14 @@ window.onload = function() {
             touched["U"] = startY - e.y > TOUCH_THRESHOLD;
         }
     });
+    game.rootScene.addEventListener('touchend', function(e) {
+        for (let val of touched.values()) val = false;
+    });
     Player = enchant.Class.create(Sprite, {
         initialize: function() {
             let game = enchant.Game.instance;
             Sprite.call(this, 32, 32);
             this.image = game.assets['chara.png'];
-            this.isMoving = false;
             this.x = 0;
             this.y = 0;
             this.count = 0;
@@ -111,18 +113,20 @@ window.onload = function() {
             this.image = game.assets['apple.png'];
         }
     });
+    Apple.prototype.reset = function () {
+        this.x = random_pos();
+        this.y = random_pos();
+    };
     game.onload = function() {
         let map = new Map(32, 32);
         map.image = game.assets['map.png'];
         map.loadData(MAP_DATA);
         let player = new Player();
         let apple = new Apple();
-        apple.x = random_pos();
-        apple.y = random_pos();
+        apple.reset();
         apple.addEventListener('enterframe', function() {
             if (player.within(this, APPLE_THRESHOLD)) {
-                this.x = random_pos();
-                this.y = random_pos();
+                apple.reset();
             }
         });
         let stage = new Group();
