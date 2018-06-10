@@ -1,5 +1,24 @@
 enchant();
 
+let XorShift = function (seed = 88675123) {
+    this.x = 123456789;
+    this.y = 362436069;
+    this.z = 521288629;
+    this.w = seed;
+    console.log(this.w);
+};
+XorShift.prototype.next = function () {
+    let t = this.x ^ (this.x << 11);
+    this.x = this.y;
+    this.y = this.z;
+    this.z = this.w;
+    this.w ^= (this.w >>> 19) ^ t ^ (t >>> 8);
+    return this.w;
+};
+XorShift.prototype.range = function (l, r) {
+    let range = r - l;
+    return Math.abs(this.next()) % range + l;
+};
 window.onload = function() {
     let game = new Game(320, 320);
     game.fps = 20;
@@ -9,8 +28,10 @@ window.onload = function() {
     const HEIGHT = 8;
     const MAX_X = 32 * 7;
     const MAX_Y = 32 * 7;
+    const SEED = null;
+    let rng = new XorShift(Math.floor(SEED ? SEED: Math.random() * 1000000000));
     function random_pos() {
-        return ((Math.random() * 10) % 8) * 32;
+        return rng.range(0, 32 * 7);
     }
     const MAP_DATA = [
         [2, 3, 3, 3, 3, 3, 3, 0],
@@ -31,43 +52,24 @@ window.onload = function() {
     const WATER_X = [0, 1, 0, -1, 100];
     const WATER_Y = [-1, 0, 1, 0, 100];
     const INPUT_DV = 4;
+    const TOUCH_THRESHOLD = 10;
+    const APPLE_THRESHOLD = 12;
     let startX = null;
     let startY = null;
-    let touchR = false;
-    let touchL = false;
-    let touchU = false;
-    let touchD = false;
-    let touch_init = function() {
-        touchR = false;
-        touchL = false;
-        touchU = false;
-        touchD = false;
-    };
+    let touched = new Array();
     game.rootScene.addEventListener('touchstart', function(e) {
         startX = e.x;
         startY = e.y;
     });
     game.rootScene.addEventListener('touchmove', function(e) {
-        touch_init();
         if (startX) {
-            if (e.x - startX > 10) {
-                touchR = true;
-            }
-            if (startX - e.x > 10) {
-                touchL = true;
-            }
+            touched["R"] = e.x - startX > TOUCH_THRESHOLD;
+            touched["L"] = startX - e.x > TOUCH_THRESHOLD;
         }
         if (startY) {
-            if (e.y - startY > 10) {
-                touchD = true;
-            }
-            if (startY - e.y > 10) {
-                touchU = true;
-            }
+            touched["U"] = e.y - startY > TOUCH_THRESHOLD;
+            touched["D"] = startY - e.y > TOUCH_THRESHOLD;
         }
-    });
-    game.rootScene.addEventListener('touchend', function(e) {
-        touch_init();
     });
     Player = enchant.Class.create(Sprite, {
         initialize: function() {
@@ -82,13 +84,13 @@ window.onload = function() {
                 this.count += 1;
                 let dx = 0;
                 let dy = 0;
-                if (game.input.left || touchL) {
+                if (game.input.left || touched["L"]) {
                     dx -= INPUT_DV;
-                } else if (game.input.right || touchR) {
+                } else if (game.input.right || touched["R"]) {
                     dx += INPUT_DV;
-                } else if (game.input.up || touchU) {
+                } else if (game.input.up || touched["U"]) {
                     dy -= INPUT_DV;
-                } else if (game.input.down || touchD) {
+                } else if (game.input.down || touched["D"]) {
                     dy += INPUT_DV;
                 }
                 let id = map_id(this.x, this.y);
@@ -118,7 +120,7 @@ window.onload = function() {
         apple.x = random_pos();
         apple.y = random_pos();
         apple.addEventListener('enterframe', function() {
-            if (player.within(this, 8)) {
+            if (player.within(this, APPLE_THRESHOLD)) {
                 this.x = random_pos();
                 this.y = random_pos();
             }
