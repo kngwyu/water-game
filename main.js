@@ -7,6 +7,7 @@ let XorShift = function (seed = 88675123) {
     this.w = seed;
     console.log(this.w);
 };
+
 XorShift.prototype.next = function () {
     let t = this.x ^ (this.x << 11);
     this.x = this.y;
@@ -15,10 +16,12 @@ XorShift.prototype.next = function () {
     this.w ^= (this.w >>> 19) ^ t ^ (t >>> 8);
     return this.w;
 };
+
 XorShift.prototype.range = function (l, r) {
     let range = r - l;
     return Math.abs(this.next()) % range + l;
 };
+
 window.onload = function() {
     let game = new Game(320, 320);
     game.fps = 20;
@@ -72,7 +75,8 @@ window.onload = function() {
         }
     });
     game.rootScene.addEventListener('touchend', function(e) {
-        for (let val of touched.values()) val = false;
+        for (let c of "RLDU")
+            touched[c] = false;
     });
     Player = enchant.Class.create(Sprite, {
         initialize: function() {
