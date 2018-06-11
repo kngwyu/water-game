@@ -100,8 +100,8 @@ window.onload = function() {
                     dy += INPUT_DV;
                 }
                 let id = map_id(this.x, this.y);
-                this.x += WATER_X[id];
-                this.y += WATER_Y[id];
+                this.x += WATER_X[id] * rng.range(1, 4);
+                this.y += WATER_Y[id] * rng.range(1, 4);
                 this.moveBy(dx, dy);
                 this.x = Math.max(0, this.x);
                 this.y = Math.max(0, this.y);
